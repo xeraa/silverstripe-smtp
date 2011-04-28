@@ -3,13 +3,13 @@ Based on http://silverstripe.org/smtpmailer-module/ but as it's outdated and not
 
 
 ## Description
-silverstripe-smtp automatically sends emails (e.g. from UserForms) to your provider's or host's SMTP server instead of using PHP's built-in mail() function.
+silverstripe-smtp automatically sends emails (e.g. from UserForms) to your provider's or host's SMTP server instead of using PHP's built-in ``mail()`` function.
 
-silverstripe-smtp replaces the classic SilverStripe Mailer (using the mail() function) with PHPMailer (http://sourceforge.net/projects/phpmailer/) to send emails via the SMTP protocol to an SMTP server.
+silverstripe-smtp replaces the classic SilverStripe Mailer (using the ``mail()`` function) with PHPMailer (http://sourceforge.net/projects/phpmailer/) to send emails via the SMTP protocol to a local or remote SMTP server.
 
 When would you use this module:
 
-* If your provider disabled mail()
+* If your provider disabled ``mail()``
 * If you have troubles sending emails because of the DNS configuration and the way some mail servers discard emails if the domain names don't match
 * If you want to send emails from your local web server without having to install a mail server, using an external SMTP server instead
 * If you want to send encrypted emails (using SSL or TLS protocols)
@@ -20,13 +20,13 @@ SilverStripe 2.4+ (might work with 2.3, but only tested on 2.4)
 
 
 ## Installation
-1. Extract the silverstripe-smtp folder into the top level of your site and rename it to smtp
+1. Extract the ``silverstripe-smtp`` folder into the top level of your site and rename it to ``smtp``
 2. Without any configuration, the module is going to connect to the mail server on localhost without authentication
-3. If you want to fall back to the classic Mailer without uninstalling the module: edit smtp/_config.php and comment out the "set_mailer" statement
+3. If you want to fall back to the classic Mailer without uninstalling the module: edit ``smtp/_config.php`` and comment out the ``set_mailer`` statement
 
 
 ## Configuration
-Configure the module by editing mysite/_config.php and set the following constants:
+Configure the module by editing ``mysite/_config.php`` and set the following constants:
 
     //Required:
     define('SMTPMAILER_SMTP_SERVER_ADDRESS', 'smtp.gmail.com'); //SMTP server address
@@ -53,14 +53,14 @@ Configure the module by editing mysite/_config.php and set the following constan
         * Redistributions in binary form must reproduce the above copyright
           notice, this list of conditions and the following disclaimer in the
           documentation and/or other materials provided with the distribution.
-        * Neither the name of the <organization> nor the
-          names of its contributors may be used to endorse or promote products
-          derived from this software without specific prior written permission.
-   
-    THIS SOFTWARE IS PROVIDED BY Silverstripe Ltd. ``AS IS'' AND ANY
+        * Neither the name of the authors nor the names of its contributors
+          may be used to endorse or promote products derived from this
+          software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS "AS IS" AND ANY
     EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-    DISCLAIMED. IN NO EVENT SHALL Silverstripe Ltd. BE LIABLE FOR ANY
+    DISCLAIMED. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY
     DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
     (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
     LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
