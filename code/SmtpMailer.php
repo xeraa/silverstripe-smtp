@@ -21,7 +21,7 @@ class SmtpMailer extends Mailer {
 			$this->mailer->CharSet = defined('SMTPMAILER_CHARSET_ENCODING') ? SMTPMAILER_CHARSET_ENCODING : "utf-8";
 			$this->mailer->Host = defined('SMTPMAILER_SMTP_SERVER_ADDRESS') ? SMTPMAILER_SMTP_SERVER_ADDRESS : "localhost";
 			$this->mailer->Port = defined('SMTPMAILER_SMTP_SERVER_PORT') ? SMTPMAILER_SMTP_SERVER_PORT : 25;
-			$this->mailer->SMTPSecure = defined('SMTPMAILER_USE_SECURE_CONNECTION') ? strtolower( SMTPMAILER_USE_SECURE_CONNECTION ) : '';
+			$this->mailer->SMTPSecure = defined('SMTPMAILER_USE_SECURE_CONNECTION') ? strtolower(SMTPMAILER_USE_SECURE_CONNECTION) : '';
 			$this->mailer->SMTPAuth = defined('SMTPMAILER_DO_AUTHENTICATE') ? SMTPMAILER_DO_AUTHENTICATE : false;
 			if($this->mailer->SMTPAuth){
 				$this->mailer->Username = defined('SMTPMAILER_USERNAME') ? SMTPMAILER_USERNAME : "username";
@@ -45,22 +45,23 @@ class SmtpMailer extends Mailer {
 	/* Overwriting SilverStripe's Mailer's function */
 	function sendHTML($to, $from, $subject, $htmlContent, $attachedFiles = false, $customheaders = false, $plainContent = false, $inlineImages = false){
 		$this->instanciate();
-		$this->mailer->IsHTML( true );
-		if( $inlineImages ) {
-			$this->mailer->MsgHTML( $htmlContent, Director::baseFolder() );
-		}
-		else {
+		$this->mailer->IsHTML(true);
+		if($inlineImages){
+			$this->mailer->MsgHTML($htmlContent, Director::baseFolder());
+		} else {
 			$this->mailer->Body = $htmlContent;
-			if( empty( $plainContent ) ) $plainContent = trim( Convert::html2raw( $htmlContent ) );
-			$this->mailer->AltBody = $plainContent;
+      if(empty($plainContent)){
+        $plainContent = trim(Convert::html2raw($htmlContent));
+      }
+      $this->mailer->AltBody = $plainContent;
 		}
-		$this->sendMailViaSmtp( $to, $from, $subject, $attachedFiles, $customheaders, $inlineImages );
+		$this->sendMailViaSmtp($to, $from, $subject, $attachedFiles, $customheaders, $inlineImages);
 	}
 
 
 	protected function sendMailViaSmtp($to, $from, $subject, $attachedFiles = false, $customheaders = false, $inlineImages = false){
 		if($this->mailer->SMTPDebug > 0){
-			echo "<em><strong>*** Debug mode is on</strong>, printing debug messages and not redirecting to the website:</em><br />";
+			echo "<em><strong>*** Debug mode is on</strong>, printing debug messages and not redirecting to the website:</em><br/>";
 		}
 		$msgForLog = "\n*** The sender was : $from\n*** The message was :\n{$this->mailer->AltBody}\n";
 
@@ -84,7 +85,7 @@ class SmtpMailer extends Mailer {
 	}
 
 
-	function handleError($msg, $msgForLog ){
+	function handleError($msg, $msgForLog){
 		echo $msg;
 		Debug::log($msg . $msgForLog);
 		die();
@@ -126,10 +127,9 @@ class SmtpMailer extends Mailer {
 	protected function attachFiles($attachedFiles){
 		if(!empty($attachedFiles) && is_array($attachedFiles)){
 			foreach($attachedFiles as $attachedFile){
-				if(Utils::StartsWith($attachedFile['filename'],Director::baseFolder())) {
+        if(substr($attachedFile['filename'], 0, strlen(Director::baseFolder())) === Director::baseFolder()){ // If the file path is already included, don't include it again
 					$filePath = $attachedFile['filename'];
-				}
-				else {
+				} else {
 					$filePath = Director::baseFolder() . DIRECTORY_SEPARATOR . $attachedFile['filename'];
 				}
 				$this->mailer->AddAttachment($filePath);
