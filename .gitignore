@@ -14,3 +14,8 @@ Thumbs.db
 *.log
 *.sql
 *.sqlite
+
+
+# Editor temp files #
+#####################
+*.swp
