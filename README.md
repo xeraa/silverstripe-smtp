@@ -1,5 +1,5 @@
 # PHPMailer for SilverStripe
-Based on http://silverstripe.org/smtpmailer-module/ but as it's outdated and not available on GitHub I created this fork.
+Based on [http://silverstripe.org/smtpmailer-module/](http://silverstripe.org/smtpmailer-module/) but as it's outdated and not available on GitHub I created this fork.
 
 
 ## Description
@@ -44,7 +44,7 @@ Configure the module by editing ``mysite/_config.php`` and set the following con
 
 
 ## License
-    Copyright (c) 2008 Renaud Merle, 2011 Philipp Krenn
+    Copyright (c) 2008 Renaud Merle, 2012 Philipp Krenn
     All rights reserved.
    
     Redistribution and use in source and binary forms, with or without
