@@ -67,6 +67,7 @@ class SmtpMailer extends Mailer {
 
 		try {
 			$this->buildBasicMail($to, $from, $subject);
+			$customheaders['X-SMTPAPI'] = '{"category": "' . $_SERVER['HTTP_HOST'] . '"}'; // Add the current domain for services like SendGrid
 			$this->addCustomHeaders($customheaders);
 			$this->attachFiles($attachedFiles);
 			$this->mailer->Send();
