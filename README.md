@@ -13,11 +13,12 @@ When would you use this module:
 * If you have troubles sending emails because of the DNS configuration and the way some mail servers discard emails if the domain names don't match
 * If you want to send emails from your local web server without having to install a mail server, using an external SMTP server instead
 * If you want to send encrypted emails (using SSL or TLS protocols)
+* If you are using Amazon Web Services and would like to utilize the SES (Simple Email Service) which requires throttling and the use of SMTP with authentication over SSL/TLS.
 
 
 
 ## Requirements
-SilverStripe 2.4+ (might work with 2.3, but only tested on 2.4)
+SilverStripe 2.3+
 
 
 ## Installation
@@ -28,7 +29,7 @@ SilverStripe 2.4+ (might work with 2.3, but only tested on 2.4)
 
 ## Configuration
 Configure the module by editing ``mysite/_config.php`` and set the following constants:
-
+```php
     //Required:
     define('SMTPMAILER_SMTP_SERVER_ADDRESS', 'smtp.gmail.com'); //SMTP server address
     define('SMTPMAILER_DO_AUTHENTICATE', true); //Turn on SMTP server authentication. Set to false for an anonymous connection
@@ -41,7 +42,8 @@ Configure the module by editing ``mysite/_config.php`` and set the following con
     define('SMTPMAILER_SMTP_SERVER_PORT', 465); //SMTP server port. Set to 25 if no encryption is used, 465 if ssl or tls is activated
     define('SMTPMAILER_DEBUG_MESSAGING_LEVEL', 0); //Print debugging informations. 0 = no debuging, 1 = print errors, 2 = print errors and messages, 4 = print full activity
     define('SMTPMAILER_LANGUAGE_OF_MESSAGES', 'de'); //Language for messages. Look into smtp/code/vendor/language/ for available languages
-
+    define('SMTPMAILER_SEND_DELAY', 2000);//throttling, in milliseconds, can also be 0
+```
 
 ## License
     Copyright (c) 2008 Renaud Merle, 2012 Philipp Krenn
