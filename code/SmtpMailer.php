@@ -9,7 +9,8 @@ class SmtpMailer extends Mailer {
 
 
 	function __construct($mailer = null){
-		parent::__construct();
+		if(method_exists(get_parent_class($this), "__construct"))
+      parent::__construct();
 		$this->mailer = $mailer;
 	}
 
@@ -101,11 +102,11 @@ class SmtpMailer extends Mailer {
 		}
 		if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $to, $to_splitted)){ //If $from countains a name, e.g. "My Name" <foo@gmail.com>
 			$this->mailer->ClearAddresses();
-			$this->mailer->AddAddress($to_splitted[3], $to_splitted[2]); 
+			$this->mailer->AddAddress($to_splitted[3], $to_splitted[2]);
 		} else {
-			$to = validEmailAddr($to);
+			$to = Email::validEmailAddress($to);
 			$this->mailer->ClearAddresses();
-			$this->mailer->AddAddress($to, ucfirst(substr($to, 0, strpos($to, '@')))); 
+			$this->mailer->AddAddress($to, ucfirst(substr($to, 0, strpos($to, '@'))));
 			//For the recipient's name, the string before the @ from the e-mail address is used
 			$this->mailer->SetFrom($from);
 		}
@@ -133,13 +134,8 @@ class SmtpMailer extends Mailer {
 
 	protected function attachFiles($attachedFiles){
 		if(!empty($attachedFiles) && is_array($attachedFiles)){
-			foreach($attachedFiles as $attachedFile){
-        if(substr($attachedFile['filename'], 0, strlen(Director::baseFolder())) === Director::baseFolder()){ // If the file path is already included, don't include it again
-					$filePath = $attachedFile['filename'];
-				} else {
-					$filePath = Director::baseFolder() . DIRECTORY_SEPARATOR . $attachedFile['filename'];
-				}
-				$this->mailer->AddAttachment($filePath);
+			foreach($attachedFiles as $attachedFile) {
+				$this->mailer->AddStringAttachment($attachedFile["contents"], $attachedFile["filename"]);
 			}
 		}
 	}
