@@ -107,23 +107,39 @@ class SmtpMailer extends Mailer {
 	}
 
 
-	protected function buildBasicMail($to, $from, $subject){
-		if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $from, $from_splitted)){ //If $from countains a name, e.g. "My Name" <foo@gmail.com>
-			$this->mailer->SetFrom($from_splitted[3], $from_splitted[2]);
-		} else {
-			$this->mailer->SetFrom($from);
+	protected function buildBasicMail($to, $from = null, $subject)	{
+		if($from) { //Only handle $from if set
+			if($from = $this->formatAddress($from));
+				$this->mailer->SetFrom($from["address"], $from["name"]);
 		}
-		if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $to, $to_splitted)){ //If $from countains a name, e.g. "My Name" <foo@gmail.com>
+		//Recipient $to
+		if($to = $this->formatAddress($to)) {
 			$this->mailer->ClearAddresses();
-			$this->mailer->AddAddress($to_splitted[3], $to_splitted[2]); 
+			$this->mailer->AddAddress($to["address"], $to["name"]);
 		} else {
-			$to = validEmailAddr($to);
-			$this->mailer->ClearAddresses();
-			$this->mailer->AddAddress($to, ucfirst(substr($to, 0, strpos($to, '@')))); 
-			//For the recipient's name, the string before the @ from the e-mail address is used
-			$this->mailer->SetFrom($from);
+			//There should probably be an error handler here, rather than letting PHPMailer crash the process with a plain error.
+			return false;
 		}
 		$this->mailer->Subject = $subject;
+	}
+
+	/* Format address values from plain email address or name & email address e.g "My Name" <foo@gmail.com> */
+	protected function formatAddress($address) {
+		//Format from values
+		$name = null;
+		if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $address, $address_splitted)) { //If $address countains a name, e.g. "My Name" <foo@gmail.com>
+			$address = $address_splitted[3];
+			$name = $address_splitted[2];
+		}
+		$address = trim($address); //Clear whitespace
+		if(!Email::validEmailAddress($address)) { //Check for valid email address
+			$this->handleError("Email address is invalid", "Email address is invalid");
+			return false;
+		}
+		if(!$name) //If name is not defined, use string before @ in e-mail address
+			$name = ucfirst(substr($address, 0, strpos($address, '@')));
+
+		return compact("address", "name");
 	}
 
 
