@@ -34,6 +34,7 @@ class SmtpMailer extends Mailer {
 			}
 			$this->mailer->SMTPDebug = defined('SMTPMAILER_DEBUG_MESSAGING_LEVEL') ? SMTPMAILER_DEBUG_MESSAGING_LEVEL : 0;
 			$this->mailer->SetLanguage(defined('SMTPMAILER_LANGUAGE_OF_MESSAGES') ? SMTPMAILER_LANGUAGE_OF_MESSAGES : 'en');
+			$this->mailer->ErrorLevel = defined('SMTPMAILER_SMTP_ERROR_LEVEL') ? SMTPMAILER_SMTP_ERROR_LEVEL : E_USER_ERROR;
 		}
 	}
 
@@ -101,9 +102,7 @@ class SmtpMailer extends Mailer {
 
 
 	function handleError($msg, $msgForLog){
-		echo $msg;
-		Debug::log($msg . $msgForLog);
-		die();
+		user_error($msg, $this->mailer->ErrorLevel);
 	}
 
 
@@ -117,7 +116,6 @@ class SmtpMailer extends Mailer {
 			$this->mailer->ClearAddresses();
 			$this->mailer->AddAddress($to_splitted[3], $to_splitted[2]); 
 		} else {
-			$to = Email::validEmailAddress($to);
 			$this->mailer->ClearAddresses();
 			$this->mailer->AddAddress($to, ucfirst(substr($to, 0, strpos($to, '@')))); 
 			//For the recipient's name, the string before the @ from the e-mail address is used
