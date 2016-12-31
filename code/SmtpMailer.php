@@ -7,7 +7,7 @@ require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPA
 
 class SmtpMailer extends Mailer {
 	var $mailer = null;
-	
+
 	private $sendDelay = 0;
 
 
@@ -20,7 +20,7 @@ class SmtpMailer extends Mailer {
 	protected function instanciate(){
 		//due to throttling on some services (i.e. AWS SES) we should make the sender pause
 		$this->sendDelay = defined('SMTPMAILER_SEND_DELAY') ? SMTPMAILER_SEND_DELAY : 0;
-		
+
 		if($this->mailer == null){
 			$this->mailer = new PHPMailer(true);
 			$this->mailer->IsSMTP();
@@ -76,13 +76,12 @@ class SmtpMailer extends Mailer {
 			$customheaders['X-SMTPAPI'] = '{"category": "' . $_SERVER['HTTP_HOST'] . '"}'; // Add the current domain for services like SendGrid
 			$this->addCustomHeaders($customheaders);
 			$this->attachFiles($attachedFiles);
-			
-			//due to AWS SES, sometimes we need to throttle out e-mail delivery
-			if ($this->sendDelay > 0)
-			{
+
+			//Due to AWS SES, sometimes we need to throttle out e-mail delivery
+			if($this->sendDelay > 0){
 				usleep($this->sendDelay * 1000);//we want milliseconds, not microseconds
 			}
-			
+
 			$this->mailer->Send();
 
 			if($this->mailer->SMTPDebug > 0){
@@ -90,8 +89,8 @@ class SmtpMailer extends Mailer {
 				echo "<em><strong>*** The debug mode blocked the process</strong> to avoid the url redirection. So the CC e-mail is not sent.</em>";
 				die();
 			}
-			
-			return true; // return true if everything worked.
+
+			return true; // If everything worked.
 
 		} catch(phpmailerException $pe){
 			$this->handleError($pe->errorMessage(), $msgForLog);
