@@ -68,6 +68,7 @@ class SmtpMailer extends Mailer {
 	protected function sendMailViaSmtp($to, $from, $subject, $attachedFiles = false, $customheaders = false, $inlineImages = false){
 		if($this->mailer->SMTPDebug > 0){
 			echo "<em><strong>*** Debug mode is on</strong>, printing debug messages and not redirecting to the website:</em><br/>";
+			echo "To: $to, From: $from, Subject: $subject<br>";
 		}
 		$msgForLog = "\n*** The sender was : $from\n*** The message was :\n{$this->mailer->AltBody}\n";
 
