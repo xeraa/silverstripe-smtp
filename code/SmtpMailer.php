@@ -35,6 +35,7 @@ class SmtpMailer extends Mailer {
 			}
 			$this->mailer->SMTPDebug = defined('SMTPMAILER_DEBUG_MESSAGING_LEVEL') ? SMTPMAILER_DEBUG_MESSAGING_LEVEL : 0;
 			$this->mailer->SetLanguage(defined('SMTPMAILER_LANGUAGE_OF_MESSAGES') ? SMTPMAILER_LANGUAGE_OF_MESSAGES : 'en');
+			$this->mailer->ErrorLevel = defined('SMTPMAILER_SMTP_ERROR_LEVEL') ? SMTPMAILER_SMTP_ERROR_LEVEL : E_USER_ERROR;
 		}
 	}
 
@@ -102,9 +103,7 @@ class SmtpMailer extends Mailer {
 
 
 	function handleError($msg, $msgForLog){
-		echo $msg;
-		Debug::log($msg . $msgForLog);
-		die();
+		user_error($msg, $this->mailer->ErrorLevel);
 	}
 
 
