@@ -5,7 +5,7 @@ Based on [http://silverstripe.org/smtpmailer-module/](http://silverstripe.org/sm
 ## Description
 **silverstripe-smtp** automatically sends emails (e.g. from UserForms) to your provider's or host's SMTP server instead of using PHP's built-in ``mail()`` function.
 
-**silverstripe-smtp** replaces the classic SilverStripe Mailer (using the ``mail()`` function) with PHPMailer 5.2.1 ([http://code.google.com/a/apache-extras.org/p/phpmailer/](http://code.google.com/a/apache-extras.org/p/phpmailer/), was [http://sourceforge.net/projects/phpmailer/](http://sourceforge.net/projects/phpmailer/)) to send emails via the SMTP protocol to a local or remote SMTP server.
+**silverstripe-smtp** replaces the classic SilverStripe Mailer (using the ``mail()`` function) with PHPMailer 5.2.28 ([https://github.com/PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer), was [http://sourceforge.net/projects/phpmailer/](http://sourceforge.net/projects/phpmailer/)) to send emails via the SMTP protocol to a local or remote SMTP server.
 
 When would you use this module:
 
@@ -48,7 +48,7 @@ define('SMTPMAILER_SEND_DELAY', 2000);//throttling, in milliseconds, can also be
 ## License
     Copyright (c) 2008 Renaud Merle, 2012 Philipp Krenn
     All rights reserved.
-   
+
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
         * Redistributions of source code must retain the above copyright
