@@ -5,7 +5,7 @@ Based on [http://silverstripe.org/smtpmailer-module/](http://silverstripe.org/sm
 ## Description
 **silverstripe-smtp** automatically sends emails (e.g. from UserForms) to your provider's or host's SMTP server instead of using PHP's built-in ``mail()`` function.
 
-**silverstripe-smtp** replaces the classic SilverStripe Mailer (using the ``mail()`` function) with PHPMailer 5.2.28 ([https://github.com/PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer), was [http://sourceforge.net/projects/phpmailer/](http://sourceforge.net/projects/phpmailer/)) to send emails via the SMTP protocol to a local or remote SMTP server.
+**silverstripe-smtp** replaces the classic SilverStripe Mailer (using the ``mail()`` function) with PHPMailer 5.2.22 ([https://github.com/PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer), was [http://sourceforge.net/projects/phpmailer/](http://sourceforge.net/projects/phpmailer/)) to send emails via the SMTP protocol to a local or remote SMTP server.
 
 When would you use this module:
 
