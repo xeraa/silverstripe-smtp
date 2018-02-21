@@ -67,6 +67,9 @@ class SmtpMailer extends Mailer {
 
 
 	protected function sendMailViaSmtp($to, $from, $subject, $attachedFiles = false, $customheaders = false, $inlineImages = false){
+		// setting a blank $from address should try to use the site's default administrator email
+		if(empty($from)) $from = Email::config()->admin_email;
+
 		if($this->mailer->SMTPDebug > 0){
 			echo "<em><strong>*** Debug mode is on</strong>, printing debug messages and not redirecting to the website:</em><br/>";
 			echo "To: $to, From: $from, Subject: $subject<br>";
@@ -103,7 +106,11 @@ class SmtpMailer extends Mailer {
 
 
 	function handleError($msg, $msgForLog){
-		user_error($msg, $this->mailer->ErrorLevel);
+		// $msgForLog contains whole body of email also
+		SS_Log::log('SMTP Mailer: error occured with exception: '.$msg."\nEmail content: ".$msgForLog, SS_Log::WARN);
+		throw new Exception('SMTP Mailer: error occured with exception: '.$msg."\nEmail content: ".$msgForLog);
+		// do not end up in error
+		// user_error($msg, $this->mailer->ErrorLevel);
 	}
 
 
@@ -115,11 +122,17 @@ class SmtpMailer extends Mailer {
 		}
 
 		$this->mailer->ClearAddresses();
-		if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $to, $to_splitted)){ //If $to countains a name, e.g. "My Name" <foo@gmail.com>
-			$this->mailer->AddAddress($to_splitted[3], $to_splitted[2]);
-		} else {
-			//For the recipient's name, the string before the @ from the e-mail address is used
-			$this->mailer->AddAddress($to, ucfirst(substr($to, 0, strpos($to, '@'))));
+		// loop through addressees if more are set
+		foreach (explode(',', $to) as $recipient) {
+			$recipient = trim($recipient);
+			if (strlen($recipient) > 0) {
+				if(preg_match('/(\'|")(.*?)\1[ ]+<[ ]*(.*?)[ ]*>/', $recipient, $recipient_splitted)){ //If $to countains a name, e.g. "My Name" <foo@gmail.com>
+					$this->mailer->AddAddress($recipient_splitted[3], $recipient_splitted[2]);
+				} else {
+					//For the recipient's name, the string before the @ from the e-mail address is used
+					$this->mailer->AddAddress($recipient, ucfirst(substr($recipient, 0, strpos($recipient, '@'))));
+				}
+			}
 		}
 
 		$this->mailer->Subject = $subject;
@@ -139,31 +152,35 @@ class SmtpMailer extends Mailer {
 
 		$this->mailer->ClearCustomHeaders();
 
-                //Convert cc/bcc/ReplyTo from headers to properties
+		//Convert cc/bcc/ReplyTo from headers to properties
 		foreach($headers as $header_name => $header_value){
-                  if(in_array(strtolower($header_name), array('cc', 'bcc', 'reply-to', 'replyto'))){
-                    $addresses = preg_split('/(,|;)/', $header_value);
-                  }
-                  switch(strtolower($header_name)) {
-                    case 'cc':
-                      foreach($addresses as $address){ $this->mailer->addCC($address); }
-                      break;
-                    case 'bcc':
-                      foreach($addresses as $address) { $this->mailer->addBCC($address); }
-                      break;
-                    case 'reply-to':
-                      foreach($addresses as $address) { $this->mailer->addReplyTo($address); }
-                      break;
-                    default:
-			$this->mailer->AddCustomHeader($header_name . ':' . $header_value);
-                      break;
-                  }
+			if(in_array(strtolower($header_name), array('cc', 'bcc', 'reply-to', 'replyto'))){
+				$addresses = preg_split('/(,|;)/', $header_value);
+			}
+			switch(strtolower($header_name)) {
+				case 'cc':
+					foreach($addresses as $address){ $this->mailer->addCC($address); }
+					break;
+				case 'bcc':
+					foreach($addresses as $address) { $this->mailer->addBCC($address); }
+					break;
+				case 'reply-to':
+					foreach($addresses as $address) { $this->mailer->addReplyTo($address); }
+					break;
+				default:
+					$this->mailer->AddCustomHeader($header_name . ':' . $header_value);
+					break;
+			}
 		}
 	}
 
 
 	protected function attachFiles($attachedFiles){
-		if(!empty($attachedFiles) && is_array($attachedFiles)){
+		// add attachments
+		if ($attachedFiles && is_array($attachedFiles)) foreach ($attachedFiles as $attachedFile) {
+			$this->mailer->addStringAttachment($attachedFile['contents'], $attachedFile['filename']);
+		}
+		/*if(!empty($attachedFiles) && is_array($attachedFiles)){
 			foreach($attachedFiles as $attachedFile){
 				if(substr($attachedFile['filename'], 0, strlen(Director::baseFolder())) === Director::baseFolder()){ // If the file path is already included, don't include it again
 					$filePath = $attachedFile['filename'];
@@ -172,7 +189,7 @@ class SmtpMailer extends Mailer {
 				}
 				$this->mailer->AddAttachment($filePath);
 			}
-		}
+		}*/
 	}
 
 
